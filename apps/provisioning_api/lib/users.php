@@ -98,7 +98,7 @@ class Users {
 			}
 		} else {
 			if(!$isAdmin) {
-				return new OC_OCS_Result(null, 106, 'no group specified (for subadmin required)');
+				return new OC_OCS_Result(null, 106, 'no group specified (required for subadmins)');
 			}
 		}
 		try {
