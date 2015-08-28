@@ -1359,6 +1359,9 @@
 			if (options.y) {
 				urlSpec.y = options.y;
 			}
+			if (options.a) {
+				urlSpec.a = options.a;
+			}
 
 			if (etag){
 				// use etag as cache buster

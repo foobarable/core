@@ -21,7 +21,9 @@
 	width:100%;
 	display:block;
 	height: 250px;
-	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 50% top;
+	background-size: contain;
 	float: none;
 	margin: 0;
 }

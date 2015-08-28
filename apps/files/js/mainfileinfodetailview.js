@@ -129,7 +129,7 @@
 						etag: this.model.get('etag'),
 						x: this.model.isImage() ? this.$el.parent().width(): 75,
 						y: this.model.isImage() ? 250: 75,
-						mode: this.model.isImage() ? 'cover': 'fill',
+						a: this.model.isImage() ? 1: null,
 						callback: function(previewUrl) {
 							$iconDiv.css('background-image', 'url("' + previewUrl + '")');
 						}
