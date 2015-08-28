@@ -10,7 +10,8 @@
 
 (function() {
 	var TEMPLATE =
-		'<a href="#" class="thumbnail action-default"></a><div title="{{name}}" class="fileName ellipsis">{{name}}</div>' +
+		'<div class="thumbnailContainer {{type}}"><a href="#" class="thumbnail action-default"></a></div>' +
+		'<div title="{{name}}" class="fileName ellipsis">{{name}}</div>' +
 		'<div class="file-details ellipsis">' +
 		'    <a href="#" ' +
 		'    alt="{{starAltText}}"' +
@@ -103,6 +104,7 @@
 			if (this.model) {
 				var isFavorite = (this.model.get('tags') || []).indexOf(OC.TAG_FAVORITE) >= 0;
 				this.$el.html(this.template({
+					type: this.model.isImage()? 'image': '',
 					nameLabel: t('files', 'Name'),
 					name: this.model.get('displayName') || this.model.get('name'),
 					pathLabel: t('files', 'Path'),
@@ -125,8 +127,9 @@
 						path: this.model.getFullPath(),
 						mime: this.model.get('mimetype'),
 						etag: this.model.get('etag'),
-						x: 75,
-						y: 75,
+						x: this.model.isImage() ? this.$el.parent().width(): 75,
+						y: this.model.isImage() ? 250: 75,
+						mode: this.model.isImage() ? 'cover': 'fill',
 						callback: function(previewUrl) {
 							$iconDiv.css('background-image', 'url("' + previewUrl + '")');
 						}
