@@ -130,9 +130,17 @@
 						x: this.model.isImage() ? this.$el.parent().width(): 75,
 						y: this.model.isImage() ? 250: 75,
 						a: this.model.isImage() ? 1: null,
-						callback: function(previewUrl) {
-							$iconDiv.css('background-image', 'url("' + previewUrl + '")');
-						},
+						callback: function(previewUrl, img) {
+							var targetHeight = img ? img.height / window.devicePixelRatio : 250;
+							if(targetHeight <= 75) {
+								this.$el.find('.thumbnailContainer').removeClass('image'); // small enough to fit in normaly
+								targetHeight = 75;
+							}
+							$iconDiv.css({
+								'background-image': 'url("' + previewUrl + '")',
+								'height': targetHeight
+							});
+						}.bind(this),
 						error: function() {
 							this.$el.find('.thumbnailContainer').removeClass('image'); //fall back to regular view
 						}.bind(this)
