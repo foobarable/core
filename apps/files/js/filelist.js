@@ -1381,8 +1381,13 @@
 				// if loading the preview image failed (no preview for the mimetype) then img.width will < 5
 				if (img.width > 5) {
 					ready(previewURL);
+				} else if (options.error) {
+					options.error();
 				}
 			};
+			if (options.error) {
+				img.onerror = options.error;
+			}
 			img.src = previewURL;
 		},
 
