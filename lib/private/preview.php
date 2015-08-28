@@ -38,6 +38,9 @@ class Preview {
 	//the thumbnail folder
 	const THUMBNAILS_FOLDER = 'thumbnails';
 
+	const MODE_FILL = 'fill';
+	const MODE_COVER = 'cover';
+
 	//config
 	private $maxScaleFactor;
 	/** @var int maximum width allowed for a preview */
@@ -56,6 +59,7 @@ class Preview {
 	private $scalingUp;
 	private $mimeType;
 	private $keepAspect = false;
+	private $mode = self::MODE_FILL;
 
 	//used to calculate the size of the preview to generate
 	/** @var int $maxPreviewWidth max width a preview can have */
@@ -332,6 +336,19 @@ class Preview {
 	}
 
 	/**
+	 * Set whether to cover or fill the specified dimensions
+	 *
+	 * @param string $mode
+	 *
+	 * @return \OC\Preview
+	 */
+	public function setMode($mode) {
+		$this->mode = $mode;
+
+		return $this;
+	}
+
+	/**
 	 * Sets whether we need to generate a preview which keeps the aspect ratio of the original file
 	 *
 	 * @param bool $keepAspect
@@ -542,6 +559,32 @@ class Preview {
 
 		if ($askedWidth / $originalRatio < $askedHeight) {
 			// width restricted
+			$askedHeight = round($askedWidth / $originalRatio);
+		} else {
+			$askedWidth = round($askedHeight * $originalRatio);
+		}
+
+		return [(int)$askedWidth, (int)$askedHeight];
+	}
+
+	/**
+	 * Resizes the boundaries to cover the area
+	 *
+	 * @param int $askedWidth
+	 * @param int $askedHeight
+	 * @param int $previewWidth
+	 * @param int $previewHeight
+	 * @return \int[]
+	 */
+	private function applyCover($askedWidth, $askedHeight, $previewWidth, $previewHeight) {
+		$originalRatio = $previewWidth / $previewHeight;
+		// Defines the box in which the preview has to fit
+		$scaleFactor = $this->scalingUp ? $this->maxScaleFactor : 1;
+		$askedWidth = min($askedWidth, $previewWidth * $scaleFactor);
+		$askedHeight = min($askedHeight, $previewHeight * $scaleFactor);
+
+		if ($askedWidth / $originalRatio > $askedHeight) {
+			// height restricted
 			$askedHeight = round($askedWidth / $originalRatio);
 		} else {
 			$askedWidth = round($askedHeight * $originalRatio);
@@ -794,12 +837,20 @@ class Preview {
 				$this->applyAspectRatio($askedWidth, $askedHeight);
 		}
 
+		if ($this->mode === self::MODE_COVER) {
+			list($scaleWidth, $scaleHeight) =
+				$this->applyCover($askedWidth, $askedHeight, $previewWidth, $previewHeight);
+		} else {
+			$scaleWidth = $askedWidth;
+			$scaleHeight = $askedHeight;
+		}
+
 		/**
 		 * Phase 2: Resizes preview to try and match requirements.
 		 * Takes the scaling ratio into consideration
 		 */
 		list($newPreviewWidth, $newPreviewHeight) = $this->scale(
-			$image, $askedWidth, $askedHeight, $previewWidth, $previewHeight
+			$image, $scaleWidth, $scaleHeight, $previewWidth, $previewHeight
 		);
 
 		// The preview has been resized and should now have the asked dimensions
@@ -999,6 +1050,9 @@ class Preview {
 		}
 		if ($this->keepAspect && !$isMaxPreview) {
 			$previewPath .= '-with-aspect';
+		}
+		if ($this->mode === self::MODE_COVER) {
+			$previewPath .= '-cover';
 		}
 		$previewPath .= '.png';
 
