@@ -132,7 +132,10 @@
 						a: this.model.isImage() ? 1: null,
 						callback: function(previewUrl) {
 							$iconDiv.css('background-image', 'url("' + previewUrl + '")');
-						}
+						},
+						error: function() {
+							this.$el.find('.thumbnailContainer').removeClass('image'); //fall back to regular view
+						}.bind(this)
 					});
 				} else {
 					// TODO: special icons / shared / external
