@@ -548,14 +548,22 @@ class Preview {
 	 * @param int $askedWidth
 	 * @param int $askedHeight
 	 *
+	 * @param int $originalWidth
+	 * @param int $originalHeight
 	 * @return \int[]
 	 */
-	private function applyAspectRatio($askedWidth, $askedHeight) {
-		$originalRatio = $this->maxPreviewWidth / $this->maxPreviewHeight;
+	private function applyAspectRatio($askedWidth, $askedHeight, $originalWidth = 0, $originalHeight = 0) {
+		if(!$originalWidth){
+			$originalWidth= $this->maxPreviewWidth;
+		}
+		if (!$originalHeight) {
+			$originalHeight = $this->maxPreviewHeight;
+		}
+		$originalRatio = $originalWidth / $originalHeight;
 		// Defines the box in which the preview has to fit
 		$scaleFactor = $this->scalingUp ? $this->maxScaleFactor : 1;
-		$askedWidth = min($askedWidth, $this->maxPreviewWidth * $scaleFactor);
-		$askedHeight = min($askedHeight, $this->maxPreviewHeight * $scaleFactor);
+		$askedWidth = min($askedWidth, $originalWidth * $scaleFactor);
+		$askedHeight = min($askedHeight, $originalHeight * $scaleFactor);
 
 		if ($askedWidth / $originalRatio < $askedHeight) {
 			// width restricted
@@ -834,7 +842,7 @@ class Preview {
 		 */
 		if ($this->keepAspect) {
 			list($askedWidth, $askedHeight) =
-				$this->applyAspectRatio($askedWidth, $askedHeight);
+				$this->applyAspectRatio($askedWidth, $askedHeight, $previewWidth, $previewHeight);
 		}
 
 		if ($this->mode === self::MODE_COVER) {
