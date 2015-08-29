@@ -10,7 +10,7 @@
 
 (function() {
 	var TEMPLATE =
-		'<div class="thumbnailContainer {{type}}"><a href="#" class="thumbnail action-default"></a></div>' +
+		'<div class="thumbnailContainer"><a href="#" class="thumbnail action-default"></a></div>' +
 		'<div title="{{name}}" class="fileName ellipsis">{{name}}</div>' +
 		'<div class="file-details ellipsis">' +
 		'    <a href="#" ' +
@@ -122,6 +122,7 @@
 
 				// TODO: we really need OC.Previews
 				var $iconDiv = this.$el.find('.thumbnail');
+				$iconDiv.addClass('icon-loading');
 				if (!this.model.isDirectory()) {
 					this._fileList.lazyLoadPreview({
 						path: this.model.getFullPath(),
@@ -131,8 +132,13 @@
 						y: this.model.isImage() ? 250: 75,
 						a: this.model.isImage() ? 1: null,
 						callback: function(previewUrl, img) {
-							if (this.model.isImage()) {
-								var targetHeight = img ? img.height / window.devicePixelRatio : 250;
+							$iconDiv.previewImg = previewUrl;
+							if (img) {
+								$iconDiv.removeClass('icon-loading');
+							}
+							if (this.model.isImage() && img) {
+								$iconDiv.parent().addClass('image');
+								var targetHeight = img.height / window.devicePixelRatio;
 								if (targetHeight <= 75) {
 									this.$el.find('.thumbnailContainer').removeClass('image'); // small enough to fit in normaly
 									targetHeight = 75;
@@ -140,13 +146,22 @@
 							} else {
 								targetHeight = 75;
 							}
-							$iconDiv.css({
-								'background-image': 'url("' + previewUrl + '")',
-								'height': targetHeight
-							});
+
+							// only set background when we have an actual preview
+							// when we dont have a preview we show the mime icon in the error handler
+							if (img) {
+								$iconDiv.css({
+									'background-image': 'url("' + previewUrl + '")',
+									'height': targetHeight
+								});
+							}
 						}.bind(this),
 						error: function() {
+							$iconDiv.removeClass('icon-loading');
 							this.$el.find('.thumbnailContainer').removeClass('image'); //fall back to regular view
+							$iconDiv.css({
+								'background-image': 'url("' + $iconDiv.previewImg + '")'
+							});
 						}.bind(this)
 					});
 				} else {
