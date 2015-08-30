@@ -61,6 +61,42 @@ class OC_Mount_Config {
 	public static $app;
 
 	/**
+	 * @return \OCA\Files_External\Service\BackendService
+	 * @since 8.2.0
+	 * @deprecated 9.0.0
+	 */
+	public static function getBackendService() {
+		return self::$app->getContainer()->query('OCA\Files_External\Service\BackendService');
+	}
+
+	/**
+	 * @return \OCA\Files_External\Service\GlobalStoragesService
+	 * @since 8.2.0
+	 * @deprecated 9.0.0
+	 */
+	public static function getGlobalStoragesService() {
+		return self::$app->getContainer()->query('OCA\Files_External\Service\GlobalStoragesService');
+	}
+
+	/**
+	 * @return \OCA\Files_External\Service\UserGlobalStoragesService
+	 * @since 8.2.0
+	 * @deprecated 9.0.0
+	 */
+	public static function getUserGlobalStoragesService() {
+		return self::$app->getContainer()->query('OCA\Files_External\Service\UserGlobalStoragesService');
+	}
+
+	/**
+	 * @return \OCA\Files_External\Service\UserStoragesService
+	 * @since 8.2.0
+	 * @deprecated 9.0.0
+	 */
+	public static function getUserStoragesService() {
+		return self::$app->getContainer()->query('OCA\Files_External\Service\UserStoragesService');
+	}
+
+	/**
 	 * @param string $class
 	 * @param array $definition
 	 * @return bool
