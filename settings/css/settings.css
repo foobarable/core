@@ -150,6 +150,19 @@ span.usersLastLoginTooltip { white-space: nowrap; }
 	color: #000000;
 }
 
+#userlist td.quota:after {
+	content: "▾";
+	position: relative;
+	right: 30px;
+	color: #101010;
+}
+
+#userlist td.quota select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
 tr:hover>td.password>span, tr:hover>td.displayName>span { margin:0; cursor:pointer; }
 tr:hover>td.remove>a, tr:hover>td.password>img,tr:hover>td.displayName>img, tr:hover>td.quota>img { visibility:visible; cursor:pointer; }
 td.remove {
