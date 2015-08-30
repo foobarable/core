@@ -62,7 +62,6 @@ use OC\Session\CryptoWrapper;
 use OC\Tagging\TagMapper;
 use OCP\IServerContainer;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Server
@@ -1009,7 +1008,7 @@ class Server extends SimpleContainer implements IServerContainer {
 	/**
 	 * Get the EventDispatcher
 	 *
-	 * @return EventDispatcherInterface
+	 * @return \OCP\IEventDispatcher
 	 * @since 8.2.0
 	 */
 	public function getEventDispatcher() {

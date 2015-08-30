@@ -189,10 +189,6 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 			return $this->getServer()->getSearch();
 		});
 
-		$this->registerService('OCP\\ISearch', function($c) {
-			return $this->getServer()->getSearch();
-		});
-
 		$this->registerService('OCP\\Security\\ICrypto', function($c) {
 			return $this->getServer()->getCrypto();
 		});
@@ -219,6 +215,10 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 
 		$this->registerService('OCP\\ISession', function($c) {
 			return $this->getServer()->getSession();
+		});
+
+		$this->registerService('OCP\\IEventDispatcher', function($c) {
+			return $this->getServer()->getEventDispatcher();
 		});
 
 		$this->registerService('ServerContainer', function ($c) {
